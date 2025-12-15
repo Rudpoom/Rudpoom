@@ -14,7 +14,29 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
--- Dumping data for table webphoto.orders: ~21 rows (approximately)
+
+-- Dumping database structure for webphoto
+CREATE DATABASE IF NOT EXISTS `webphoto` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+USE `webphoto`;
+
+-- Dumping structure for table webphoto.orders
+CREATE TABLE IF NOT EXISTS `orders` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `photo_id` int(11) DEFAULT NULL,
+  `quantity` int(11) NOT NULL DEFAULT 1,
+  `rider_id` int(11) DEFAULT NULL,
+  `status` enum('PENDING','ASSIGNED','PICKING_UP','DELIVERING','COMPLETED','CANCELLED') NOT NULL DEFAULT 'PENDING',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `address` varchar(255) DEFAULT NULL,
+  `phone` varchar(30) DEFAULT NULL,
+  `total_cents` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `idx_orders_status` (`status`),
+  KEY `idx_orders_rider_status` (`rider_id`,`status`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table webphoto.orders: ~22 rows (approximately)
 INSERT INTO `orders` (`id`, `user_id`, `photo_id`, `quantity`, `rider_id`, `status`, `created_at`, `address`, `phone`, `total_cents`) VALUES
 	(1, 3, 3, 1, 1, 'COMPLETED', '2025-12-04 02:31:38', NULL, NULL, 0),
 	(2, 1, 2, 1, 1, 'COMPLETED', '2025-12-04 02:32:30', NULL, NULL, 0),
@@ -36,9 +58,22 @@ INSERT INTO `orders` (`id`, `user_id`, `photo_id`, `quantity`, `rider_id`, `stat
 	(18, 1, 4, 1, 1, 'COMPLETED', '2025-12-04 03:55:39', '72 ม.10 ต.ตาลเดี่ยว', '0949613350', 300),
 	(19, 1, 1, 1, 1, 'COMPLETED', '2025-12-04 03:59:28', '72 ม.10 ต.ตาลเดี่ยว', '0949613350', 100),
 	(20, 1, 1, 1, 1, 'COMPLETED', '2025-12-04 04:13:17', '72 ม.10 ต.ตาลเดี่ยว', '0949613350', 100),
-	(21, 1, 4, 1, 1, 'COMPLETED', '2025-12-04 04:31:40', '72 ม.10 ต.ตาลเดี่ยว', '0949613350', 300);
+	(21, 1, 4, 1, 1, 'COMPLETED', '2025-12-04 04:31:40', '72 ม.10 ต.ตาลเดี่ยว', '0949613350', 300),
+	(22, 1, 4, 1, 1, 'COMPLETED', '2025-12-15 02:32:12', '72 ม.10 ต.ตาลเดี่ยว', '0949613350', 300);
 
--- Dumping data for table webphoto.order_status_history: ~102 rows (approximately)
+-- Dumping structure for table webphoto.order_status_history
+CREATE TABLE IF NOT EXISTS `order_status_history` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) NOT NULL,
+  `status` enum('PENDING','ASSIGNED','PICKING_UP','DELIVERING','COMPLETED','CANCELLED') NOT NULL,
+  `changed_by` int(11) DEFAULT NULL,
+  `changed_by_role` enum('USER','RIDER','SYSTEM','ADMIN') NOT NULL,
+  `note` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=111 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table webphoto.order_status_history: ~107 rows (approximately)
 INSERT INTO `order_status_history` (`id`, `order_id`, `status`, `changed_by`, `changed_by_role`, `note`, `created_at`) VALUES
 	(1, 1, 'PENDING', 3, 'USER', 'Order created', '2025-12-04 02:31:38'),
 	(2, 2, 'PENDING', 1, 'USER', 'Order created', '2025-12-04 02:32:30'),
@@ -144,7 +179,21 @@ INSERT INTO `order_status_history` (`id`, `order_id`, `status`, `changed_by`, `c
 	(102, 21, 'ASSIGNED', 1, 'RIDER', 'Rider accepted', '2025-12-04 04:31:46'),
 	(103, 21, 'PICKING_UP', 1, 'RIDER', NULL, '2025-12-04 04:31:48'),
 	(104, 21, 'DELIVERING', 1, 'RIDER', NULL, '2025-12-04 04:31:49'),
-	(105, 21, 'COMPLETED', 1, 'RIDER', NULL, '2025-12-08 02:10:15');
+	(105, 21, 'COMPLETED', 1, 'RIDER', NULL, '2025-12-08 02:10:15'),
+	(106, 22, 'PENDING', 1, 'USER', 'Order created', '2025-12-15 02:32:12'),
+	(107, 22, 'ASSIGNED', 1, 'RIDER', 'Rider accepted', '2025-12-15 02:32:15'),
+	(108, 22, 'PICKING_UP', 1, 'RIDER', NULL, '2025-12-15 02:32:16'),
+	(109, 22, 'DELIVERING', 1, 'RIDER', NULL, '2025-12-15 02:32:16'),
+	(110, 22, 'COMPLETED', 1, 'RIDER', NULL, '2025-12-15 02:32:17');
+
+-- Dumping structure for table webphoto.photos
+CREATE TABLE IF NOT EXISTS `photos` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `url` varchar(1024) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `price_cents` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table webphoto.photos: ~3 rows (approximately)
 INSERT INTO `photos` (`id`, `url`, `created_at`, `price_cents`) VALUES
@@ -152,10 +201,26 @@ INSERT INTO `photos` (`id`, `url`, `created_at`, `price_cents`) VALUES
 	(2, '/fish.png', '2025-12-04 02:31:20', 200),
 	(4, 'https://img5.pic.in.th/file/secure-sv1/pngtree-group-of-fast-food-products-png-image_14008130.png', '2025-12-04 02:51:17', 300);
 
--- Dumping data for table webphoto.users: ~2 rows (approximately)
+-- Dumping structure for table webphoto.users
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(191) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `is_admin` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `is_rider` tinyint(1) NOT NULL DEFAULT 0,
+  `phone` varchar(30) DEFAULT NULL,
+  `rider_status` enum('AVAILABLE','BUSY','OFFLINE') NOT NULL DEFAULT 'OFFLINE',
+  `credit_cents` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table webphoto.users: ~3 rows (approximately)
 INSERT INTO `users` (`id`, `username`, `password`, `is_admin`, `created_at`, `is_rider`, `phone`, `rider_status`, `credit_cents`) VALUES
-	(1, 'gap', '$2b$10$uiHZbVGr7wXV/bPmN4RbmOxLXs77hf/6vsw7dhh9DMJ9Uc0goUDCe', 1, '2025-12-04 02:31:53', 1, NULL, 'AVAILABLE', 9200),
-	(2, 'gap2', '$2b$10$5xG3bLbmlmKrH.00cDbs0eFaNxw0FQXmwUAHAcbaoXOW/Tefyfj86', 0, '2025-12-04 02:46:42', 1, NULL, 'AVAILABLE', 9600);
+	(1, 'gap', '$2b$10$uiHZbVGr7wXV/bPmN4RbmOxLXs77hf/6vsw7dhh9DMJ9Uc0goUDCe', 1, '2025-12-04 02:31:53', 1, NULL, 'AVAILABLE', 8900),
+	(2, 'gap2', '$2b$10$5xG3bLbmlmKrH.00cDbs0eFaNxw0FQXmwUAHAcbaoXOW/Tefyfj86', 0, '2025-12-04 02:46:42', 1, NULL, 'AVAILABLE', 9600),
+	(3, 'gap12121', '$2b$10$FGQojDxanQpg3KZEAoPSIuFYaBBN5ynbSq.LEuRbFfVfB8.YYNEw2', 0, '2025-12-15 02:32:00', 0, NULL, 'OFFLINE', 0);
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
