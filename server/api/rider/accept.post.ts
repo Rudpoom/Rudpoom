@@ -1,5 +1,6 @@
 import mysql from 'mysql2/promise'
 import { requireRider } from '../../utils/rider'
+import { getConn } from '../../utils/db'
 
 export default defineEventHandler(async (event) => {
   const { riderId } = await requireRider(event)
@@ -9,12 +10,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: 'Invalid order_id' })
   }
 
-  const conn = await mysql.createConnection({
-    host: process.env.DB_HOST || '127.0.0.1',
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASS || '',
-    database: process.env.DB_NAME || 'webphoto'
-  })
+  const conn = await getConn()
   try {
     await conn.beginTransaction()
     const [rows]: any = await conn.execute('SELECT status FROM orders WHERE id=? FOR UPDATE', [orderId])
@@ -32,6 +28,8 @@ export default defineEventHandler(async (event) => {
   } catch (e) {
     try { await conn.rollback() } catch {}
     throw e
+  } finally {
+    try { conn.release() } catch {}
   }
   return { status: true }
 })

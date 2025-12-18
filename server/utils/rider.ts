@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import mysql from 'mysql2/promise'
+import { getConn } from './db'
 
 export async function requireRider(event: any) {
   let token = getHeader(event, 'authorization') as string | undefined
@@ -23,16 +24,15 @@ export async function requireRider(event: any) {
     return { riderId: payload.id }
   }
 
-  const conn = await mysql.createConnection({
-    host: process.env.DB_HOST || '127.0.0.1',
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASS || '',
-    database: process.env.DB_NAME || 'webphoto'
-  })
-  const [rows]: any = await conn.execute('SELECT id FROM users WHERE id=? AND is_rider=1', [payload.id])
-  const user = rows?.[0]
-  if (!user) {
-    throw createError({ statusCode: 403, message: 'Rider only' })
+  const conn = await getConn()
+  try {
+    const [rows]: any = await conn.execute('SELECT id FROM users WHERE id=? AND is_rider=1', [payload.id])
+    const user = rows?.[0]
+    if (!user) {
+      throw createError({ statusCode: 403, message: 'Rider only' })
+    }
+    return { riderId: payload.id }
+  } finally {
+    try { conn.release() } catch {}
   }
-  return { riderId: payload.id }
 }

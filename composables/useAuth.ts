@@ -6,7 +6,7 @@ export function useAuth() {
     const part = (t || '').split('.')[1]
     if (!part) return null
     try {
-      // Convert base64url -> base64 and add padding
+     
       let base = part.replace(/-/g, '+').replace(/_/g, '/')
       const pad = base.length % 4
       if (pad) base += '='.repeat(4 - pad)
@@ -37,7 +37,7 @@ export function useAuth() {
     if (process.client) {
       localStorage.setItem('token', t)
     }
-    // refresh profile credit on token change
+    
     refreshProfile()
   }
 
@@ -49,7 +49,7 @@ export function useAuth() {
   }
 
   if (process.client) {
-    // Ensure token initializes from localStorage on first client mount
+    
     if (!token.value) {
       const existing = localStorage.getItem('token') || ''
       if (existing) token.value = existing
@@ -57,13 +57,13 @@ export function useAuth() {
     window.addEventListener('storage', (e) => {
       if (e.key === 'token') token.value = e.newValue || ''
     })
-    // initial profile load
+    
     refreshProfile()
-    // refresh on tab focus
+   
     window.addEventListener('visibilitychange', () => {
       if (!document.hidden) refreshProfile()
     })
-    // periodic refresh while authenticated (more responsive)
+    
     setInterval(() => { if (token.value) refreshProfile() }, 5000)
   }
 
@@ -73,7 +73,7 @@ export function useAuth() {
       const me: any = await $fetch('/api/me', { headers: { authorization: token.value } })
       creditCents.value = Number(me?.credit_cents || 0)
     } catch {
-      // ignore
+    
     }
   }
 

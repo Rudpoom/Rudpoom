@@ -1,5 +1,6 @@
 import mysql from 'mysql2/promise'
 import { requireAdmin } from '../../../../utils/auth'
+import { getConn } from '../../../../utils/db'
 
 export default defineEventHandler(async (event) => {
   await requireAdmin(event)
@@ -10,14 +11,13 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: 'id and amount required' })
   }
   const amountCents = Math.round(amount * 100)
-  const conn = await mysql.createConnection({
-    host: process.env.DB_HOST || '127.0.0.1',
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASS || '',
-    database: process.env.DB_NAME || 'webphoto'
-  })
-  try { await conn.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS credit_cents INT NOT NULL DEFAULT 0"); } catch {}
-  await conn.execute('UPDATE users SET credit_cents = credit_cents + ? WHERE id=?', [amountCents, id])
-  return { status: true }
+  const conn = await getConn()
+  try {
+    try { await conn.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS credit_cents INT NOT NULL DEFAULT 0"); } catch {}
+    await conn.execute('UPDATE users SET credit_cents = credit_cents + ? WHERE id=?', [amountCents, id])
+    return { status: true }
+  } finally {
+    try { conn.release() } catch {}
+  }
 })
 

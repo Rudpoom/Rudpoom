@@ -1,5 +1,6 @@
 import mysql from 'mysql2/promise'
 import { requireAdmin } from '../../../utils/auth'
+import { getConn } from '../../../utils/db'
 
 async function ensureCreditColumn(conn: mysql.Connection) {
   try {
@@ -31,22 +32,21 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: 'id and amount required' })
   }
   const amountCents = Math.round(amount * 100)
-  const conn = await mysql.createConnection({
-    host: process.env.DB_HOST || '127.0.0.1',
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASS || '',
-    database: process.env.DB_NAME || 'webphoto'
-  })
-  await ensureCreditColumn(conn)
+  const conn = await getConn()
   try {
-    await conn.execute('UPDATE users SET credit_cents = credit_cents + ? WHERE id=?', [amountCents, id])
-  } catch (e: any) {
-    if (e?.code === 'ER_BAD_FIELD_ERROR') {
-      await ensureCreditColumn(conn)
+    await ensureCreditColumn(conn)
+    try {
       await conn.execute('UPDATE users SET credit_cents = credit_cents + ? WHERE id=?', [amountCents, id])
-    } else {
-      throw e
+    } catch (e: any) {
+      if (e?.code === 'ER_BAD_FIELD_ERROR') {
+        await ensureCreditColumn(conn)
+        await conn.execute('UPDATE users SET credit_cents = credit_cents + ? WHERE id=?', [amountCents, id])
+      } else {
+        throw e
+      }
     }
+    return { status: true }
+  } finally {
+    try { conn.release() } catch {}
   }
-  return { status: true }
 })

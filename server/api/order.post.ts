@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
   const host = process.env.DB_HOST || "127.0.0.1";
   const user = process.env.DB_USER || "root";
   const password = process.env.DB_PASS || "";
-  const database = process.env.DB_NAME || "webphoto";
+  const database = process.env.DB_NAME || "shopdb";
 
   // Ensure database exists (first-run friendly)
   try {

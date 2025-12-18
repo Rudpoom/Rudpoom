@@ -1,10 +1,18 @@
 Rider System Integration (Nuxt server + MySQL)
 
 Overview
+การทำงานหลักของโปรเจกต์นี้ผูกกับฐาน `shopdb` ตามไฟล์ใน `server/` และ `sql/rider.sql`.
+SQL (shopdb)
+
+นำเข้า schema เดิม: `sql/init.sql`
+ต่อด้วยส่วนขยายไรเดอร์: `sql/rider.sql`
+Rider System Integration (Nuxt server + MySQL)
+
+Overview
 - เมื่อผู้ใช้สั่งซื้อ (`POST /api/order`): ระบบบันทึกสถานะเริ่มต้น `PENDING` และบันทึกประวัติลง `order_status_history` พร้อม “เด้ง” ไปยังไรเดอร์ผ่าน SSE (`GET /api/rider/stream`).
 - ไรเดอร์สามารถดูงานว่าง, รับงาน, และอัปเดตสถานะตามลำดับ: `ASSIGNED` → `PICKING_UP` → `DELIVERING` → `COMPLETED`.
 
-SQL (webphoto)
+SQL (shopdb)
 - นำเข้า schema เดิม: `sql/init.sql`
 - ต่อด้วยส่วนขยายไรเดอร์: `sql/rider.sql`
   - เพิ่ม `users.is_rider`, `users.rider_status`, `orders.rider_id`, `orders.status`
@@ -32,6 +40,6 @@ Auth
 - Utils: `server/utils/rider.ts:1`, `server/utils/events.ts:1`
 
 หมายเหตุ
-- มีตัวอย่างเซิร์ฟเวอร์ Express แยกต่างหากใน `src/` และสคีมาสำหรับ DB อื่นใน `sql/schema.mysql.sql` (ตัวเลือกเสริม). การทำงานหลักของโปรเจกต์นี้ผูกกับฐาน `webphoto` ตามไฟล์ใน `server/` และ `sql/rider.sql`.
+- มีตัวอย่างเซิร์ฟเวอร์ Express แยกต่างหากใน `src/` และสคีมาสำหรับ DB อื่นใน `sql/schema.mysql.sql` (ตัวเลือกเสริม). การทำงานหลักของโปรเจกต์นี้ผูกกับฐาน `shopdb` ตามไฟล์ใน `server/` และ `sql/rider.sql`.
 
 "# shop" 

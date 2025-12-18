@@ -1,20 +1,19 @@
 <template>
   <div>
     <div class="card">
-      <div class="card-header">Available Orders</div>
-      <div v-if="loadingAvail" class="subtle mt-3">Loading...</div>
+      <div class="card-header">คำสั่งซื้อที่พร้อม</div>
+      <div v-if="loadingAvail" class="subtle mt-3">กำลังโหลด...</div>
       <div v-else>
-        <div v-if="available.length === 0" class="subtle mt-3">No pending orders</div>
+        <div v-if="available.length === 0" class="subtle mt-3">ไม่มีคำสั่งซื้อที่รอ</div>
         <div v-else class="mt-3 list">
           <div v-for="o in available" :key="o.id" class="card-row">
-            <img :src="o.photo_url || '/fire.png'" alt="thumb" class="thumb" />
             <div class="info">
-              <div class="title">#{{ o.id }} • Qty {{ o.quantity }} • User {{ o.user_id }}</div>
-              <div class="subtle">Addr: {{ o.address || '-' }} • Phone: {{ o.phone || '-' }}</div>
+              <div class="title">#{{ o.id }} • จำนวน {{ o.quantity }} • ผู้ใช้ {{ o.user_id }}</div>
+              <div class="subtle">ที่อยู่: {{ o.address || '-' }} • เบอร์โทรศัพท์: {{ o.phone || '-' }}</div>
               <div class="subtle">{{ formatDate(o.created_at) }}</div>
             </div>
             <div class="actions">
-              <button class="btn btn-primary" @click="accept(o)" :disabled="busy">Accept</button>
+              <button class="btn btn-primary" @click="accept(o)" :disabled="busy">รับงาน</button>
             </div>
           </div>
         </div>
@@ -22,16 +21,15 @@
     </div>
 
     <div class="card mt-6">
-      <div class="card-header">My Active Orders</div>
-      <div v-if="loadingMine" class="subtle mt-3">Loading...</div>
+      <div class="card-header">คำสั่งซื้อที่กำลังดำเนินการ</div>
+      <div v-if="loadingMine" class="subtle mt-3">กำลังโหลด...</div>
       <div v-else>
-        <div v-if="mine.length === 0" class="subtle mt-3">No active orders</div>
+        <div v-if="mine.length === 0" class="subtle mt-3">ไม่มีคำสั่งซื้อที่กำลังดำเนินการ</div>
         <div v-else class="mt-3 list">
           <div v-for="o in mine" :key="o.id" class="card-row">
-            <img :src="o.photo_url || '/fire.png'" alt="thumb" class="thumb" />
             <div class="info">
-              <div class="title">#{{ o.id }} • Status: {{ o.status }} • Qty {{ o.quantity }}</div>
-              <div class="subtle">Addr: {{ o.address || '-' }} • Phone: {{ o.phone || '-' }}</div>
+              <div class="title">#{{ o.id }} • Status: {{ o.status }} • จำนวน {{ o.quantity }}</div>
+              <div class="subtle">ที่อยู่: {{ o.address || '-' }} • เบอร์โทรศัพท์: {{ o.phone || '-' }}</div>
               <div class="subtle">{{ formatDate(o.created_at) }}</div>
             </div>
             <div class="actions">
@@ -68,7 +66,7 @@ onMounted(async () => {
     return
   }
   await Promise.all([loadAvailable(), loadMine()])
-  // Live updates via SSE
+ 
   try {
     es = new EventSource(`/api/rider/stream?token=${encodeURIComponent(token.value)}`)
     es.addEventListener('new_order', () => loadAvailable())
@@ -172,9 +170,9 @@ function formatDate(d: any) {
   align-items: center;
   gap: 12px;
   padding: 12px;
-  border: 1px solid var(--color-border, #eee);
+  border: 1px solid var(--color-border);
   border-radius: 10px;
-  background: var(--color-bg, #fff);
+  background: var(--color-surface);
 }
 .thumb {
   width: 64px;

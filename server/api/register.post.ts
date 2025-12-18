@@ -1,11 +1,12 @@
 import mysql from "mysql2/promise";
 import bcrypt from "bcryptjs";
+import { getConn } from '../utils/db'
 
 async function ensureDatabaseAndUsersTable() {
   const host = process.env.DB_HOST || "127.0.0.1";
   const user = process.env.DB_USER || "root";
   const password = process.env.DB_PASS || "";
-  const dbName = process.env.DB_NAME || "webphoto";
+  const dbName = process.env.DB_NAME || "shopdb";
 
   const admin = await mysql.createConnection({ host, user, password });
   try {
@@ -16,7 +17,7 @@ async function ensureDatabaseAndUsersTable() {
     await admin.end();
   }
 
-  const conn = await mysql.createConnection({ host, user, password, database: dbName });
+  const conn = await getConn()
   try {
     await conn.execute(
       `CREATE TABLE IF NOT EXISTS users (
@@ -36,7 +37,7 @@ async function ensureDatabaseAndUsersTable() {
       await conn.execute("ALTER TABLE users ADD COLUMN password VARCHAR(255) NULL");
     }
   } finally {
-    await conn.end();
+    try { conn.release() } catch {}
   }
 }
 
@@ -52,15 +53,15 @@ export default defineEventHandler(async (event) => {
   const host = process.env.DB_HOST || "127.0.0.1";
   const dbUser = process.env.DB_USER || "root";
   const dbPass = process.env.DB_PASS || "";
-  const dbName = process.env.DB_NAME || "webphoto";
+  const dbName = process.env.DB_NAME || "shopdb";
 
   let conn: any;
   try {
-    conn = await mysql.createConnection({ host, user: dbUser, password: dbPass, database: dbName });
+    conn = await getConn()
   } catch (e: any) {
     if (e?.code === 'ER_BAD_DB_ERROR') {
       await ensureDatabaseAndUsersTable();
-      conn = await mysql.createConnection({ host, user: dbUser, password: dbPass, database: dbName });
+      conn = await getConn()
     } else if (e?.code === 'ECONNREFUSED') {
       throw createError({ statusCode: 500, message: 'เชื่อมต่อฐานข้อมูลไม่ได้ (MySQL ไม่ได้ทำงาน)' });
     } else if (e?.code === 'ER_ACCESS_DENIED_ERROR') {
@@ -91,7 +92,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    // Prevent duplicate usernames even if schema lacks unique constraint
+    
     if (hasUsername || hasName) {
       const field = hasUsername ? 'username' : 'name';
       const [exists]: any = await conn.execute(`SELECT 1 FROM users WHERE ${field} = ? LIMIT 1`, [username]);
@@ -127,7 +128,7 @@ export default defineEventHandler(async (event) => {
     }
   } catch (e: any) {
     if (e?.statusCode) {
-      // Re-throw handled HTTP errors (e.g., duplicate username)
+    
       throw e;
     }
     if (e?.code === 'ER_NO_SUCH_TABLE') {
@@ -142,7 +143,7 @@ export default defineEventHandler(async (event) => {
       throw createError({ statusCode: 500, message: 'สมัครสมาชิกไม่สำเร็จ (ข้อผิดพลาดภายในระบบ)' });
     }
   } finally {
-    await conn.end();
+    try { conn.release() } catch {}
   }
 
   return { status: true };

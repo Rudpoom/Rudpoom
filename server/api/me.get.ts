@@ -1,4 +1,5 @@
 import mysql from 'mysql2/promise'
+import { getConn } from '../utils/db'
 import jwt from 'jsonwebtoken'
 
 export default defineEventHandler(async (event) => {
@@ -13,13 +14,8 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const conn = await mysql.createConnection({
-      host: process.env.DB_HOST || '127.0.0.1',
-      user: process.env.DB_USER || 'root',
-      password: process.env.DB_PASS || '',
-      database: process.env.DB_NAME || 'webphoto'
-    })
-    // Determine available columns and select safely (avoid referencing missing cols)
+    const conn = await getConn()
+   
     let rows: any[] = []
     let colRows: any[] = []
     try {
@@ -40,12 +36,13 @@ export default defineEventHandler(async (event) => {
     const [r]: any = await conn.execute(`SELECT ${selectCols} FROM users WHERE id=?`, [payload.id])
     rows = r
     const u = rows?.[0] || {}
+    try { conn.release() } catch {}
     const role = (u?.role ?? '').toString()
     const admin = Boolean(u?.is_admin) || role === 'ADMIN'
     const rider = Boolean(u?.is_rider) || role === 'RIDER'
     return { id: payload.id, username: u?.username || '', credit_cents: Number(u?.credit_cents || 0), admin, rider }
   } catch {
-    // Fallback when DB is unavailable or schema errors: derive from JWT only
+ 
     const admin = Boolean((payload as any)?.admin)
     const rider = Boolean((payload as any)?.rider)
     const username = String((payload as any)?.username || '')

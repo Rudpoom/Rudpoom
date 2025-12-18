@@ -15,11 +15,11 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
--- Dumping database structure for webphoto
-CREATE DATABASE IF NOT EXISTS `webphoto` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
-USE `webphoto`;
+-- Dumping database structure for shopdb
+CREATE DATABASE IF NOT EXISTS `shopdb` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+USE `shopdb`;
 
--- Dumping structure for table webphoto.orders
+-- Dumping structure for table shopdb.orders
 CREATE TABLE IF NOT EXISTS `orders` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
@@ -34,10 +34,10 @@ CREATE TABLE IF NOT EXISTS `orders` (
   PRIMARY KEY (`id`),
   KEY `idx_orders_status` (`status`),
   KEY `idx_orders_rider_status` (`rider_id`,`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table webphoto.orders: ~22 rows (approximately)
-INSERT INTO `orders` (`id`, `user_id`, `photo_id`, `quantity`, `rider_id`, `status`, `created_at`, `address`, `phone`, `total_cents`) VALUES
+-- Dumping data for table shopdb.orders: ~27 rows (approximately)
+REPLACE INTO `orders` (`id`, `user_id`, `photo_id`, `quantity`, `rider_id`, `status`, `created_at`, `address`, `phone`, `total_cents`) VALUES
 	(1, 3, 3, 1, 1, 'COMPLETED', '2025-12-04 02:31:38', NULL, NULL, 0),
 	(2, 1, 2, 1, 1, 'COMPLETED', '2025-12-04 02:32:30', NULL, NULL, 0),
 	(3, 1, 1, 1, 1, 'COMPLETED', '2025-12-04 02:43:36', NULL, NULL, 0),
@@ -59,9 +59,25 @@ INSERT INTO `orders` (`id`, `user_id`, `photo_id`, `quantity`, `rider_id`, `stat
 	(19, 1, 1, 1, 1, 'COMPLETED', '2025-12-04 03:59:28', '72 ม.10 ต.ตาลเดี่ยว', '0949613350', 100),
 	(20, 1, 1, 1, 1, 'COMPLETED', '2025-12-04 04:13:17', '72 ม.10 ต.ตาลเดี่ยว', '0949613350', 100),
 	(21, 1, 4, 1, 1, 'COMPLETED', '2025-12-04 04:31:40', '72 ม.10 ต.ตาลเดี่ยว', '0949613350', 300),
-	(22, 1, 4, 1, 1, 'COMPLETED', '2025-12-15 02:32:12', '72 ม.10 ต.ตาลเดี่ยว', '0949613350', 300);
+	(22, 1, 4, 1, 1, 'COMPLETED', '2025-12-15 02:32:12', '72 ม.10 ต.ตาลเดี่ยว', '0949613350', 300),
+	(23, 4, 5, 1, 4, 'COMPLETED', '2025-12-15 03:10:04', '15 st.hogmeets london', '0284651231', 6900),
+	(24, 4, 4, 1, 4, 'DELIVERING', '2025-12-15 03:23:58', '15 st.hogmeets london', '081234567', 300),
+	(25, 5, 5, 1, NULL, 'PENDING', '2025-12-17 04:24:31', '15 st.hogmeets london', '080-xxx-xxxx', 6900),
+	(26, 5, 7, 1, NULL, 'PENDING', '2025-12-17 05:03:52', '15 st.hogmeets london', '0284651231', 20000),
+	(27, 5, 14, 1, 5, 'COMPLETED', '2025-12-17 07:19:25', '15 st.hogmeets london', '0284651231', 16900),
+	(28, 7, 11, 1, 5, 'COMPLETED', '2025-12-18 03:43:09', '72 ม.10 ต.ตาลเดี่ยว', '0949613350', 16900),
+	(29, 5, 16, 1, 5, 'COMPLETED', '2025-12-18 03:45:25', '15 st.hogmeets london', '0284651231', 9900),
+	(30, 5, 16, 1, 5, 'COMPLETED', '2025-12-18 03:45:27', '15 st.hogmeets london', '0284651231', 9900),
+	(31, 5, 16, 1, 5, 'COMPLETED', '2025-12-18 03:45:28', '15 st.hogmeets london', '0284651231', 9900),
+	(32, 5, 16, 1, 5, 'COMPLETED', '2025-12-18 03:45:29', '15 st.hogmeets london', '0284651231', 9900),
+	(33, 5, 16, 1, 5, 'COMPLETED', '2025-12-18 03:45:29', '15 st.hogmeets london', '0284651231', 9900),
+	(34, 5, 16, 1, 5, 'COMPLETED', '2025-12-18 03:45:30', '15 st.hogmeets london', '0284651231', 9900),
+	(35, 5, 16, 1, 5, 'COMPLETED', '2025-12-18 03:45:30', '15 st.hogmeets london', '0284651231', 9900),
+	(36, 5, 16, 1, 5, 'COMPLETED', '2025-12-18 03:45:30', '15 st.hogmeets london', '0284651231', 9900),
+	(37, 5, 16, 1, 5, 'COMPLETED', '2025-12-18 03:46:31', '15 st.hogmeets london', '0284651231', 9900),
+	(38, 8, 11, 1, 5, 'COMPLETED', '2025-12-18 03:53:30', '4x ถ.แสลงพัน ต.งัว อ.แงว จ.งาว', '0987654321', 16900);
 
--- Dumping structure for table webphoto.order_status_history
+-- Dumping structure for table shopdb.order_status_history
 CREATE TABLE IF NOT EXISTS `order_status_history` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `order_id` int(11) NOT NULL,
@@ -71,10 +87,10 @@ CREATE TABLE IF NOT EXISTS `order_status_history` (
   `note` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=111 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=182 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table webphoto.order_status_history: ~107 rows (approximately)
-INSERT INTO `order_status_history` (`id`, `order_id`, `status`, `changed_by`, `changed_by_role`, `note`, `created_at`) VALUES
+-- Dumping data for table shopdb.order_status_history: ~110 rows (approximately)
+REPLACE INTO `order_status_history` (`id`, `order_id`, `status`, `changed_by`, `changed_by_role`, `note`, `created_at`) VALUES
 	(1, 1, 'PENDING', 3, 'USER', 'Order created', '2025-12-04 02:31:38'),
 	(2, 2, 'PENDING', 1, 'USER', 'Order created', '2025-12-04 02:32:30'),
 	(3, 2, 'ASSIGNED', 1, 'RIDER', 'Rider accepted', '2025-12-04 02:39:56'),
@@ -184,24 +200,95 @@ INSERT INTO `order_status_history` (`id`, `order_id`, `status`, `changed_by`, `c
 	(107, 22, 'ASSIGNED', 1, 'RIDER', 'Rider accepted', '2025-12-15 02:32:15'),
 	(108, 22, 'PICKING_UP', 1, 'RIDER', NULL, '2025-12-15 02:32:16'),
 	(109, 22, 'DELIVERING', 1, 'RIDER', NULL, '2025-12-15 02:32:16'),
-	(110, 22, 'COMPLETED', 1, 'RIDER', NULL, '2025-12-15 02:32:17');
+	(110, 22, 'COMPLETED', 1, 'RIDER', NULL, '2025-12-15 02:32:17'),
+	(111, 23, 'PENDING', 4, 'USER', 'Order created', '2025-12-15 03:10:04'),
+	(112, 23, 'ASSIGNED', 4, 'RIDER', 'Rider accepted', '2025-12-15 03:11:06'),
+	(113, 23, 'PICKING_UP', 4, 'RIDER', NULL, '2025-12-15 03:11:11'),
+	(114, 23, 'DELIVERING', 4, 'RIDER', NULL, '2025-12-15 03:23:34'),
+	(115, 23, 'COMPLETED', 4, 'RIDER', NULL, '2025-12-15 03:23:36'),
+	(116, 24, 'PENDING', 4, 'USER', 'Order created', '2025-12-15 03:23:58'),
+	(117, 24, 'ASSIGNED', 4, 'RIDER', 'Rider accepted', '2025-12-15 03:24:07'),
+	(118, 24, 'PICKING_UP', 4, 'RIDER', NULL, '2025-12-15 03:24:14'),
+	(119, 24, 'DELIVERING', 4, 'RIDER', NULL, '2025-12-15 03:24:28'),
+	(120, 25, 'PENDING', 5, 'USER', 'Order created', '2025-12-17 04:24:31'),
+	(121, 26, 'PENDING', 5, 'USER', 'Order created', '2025-12-17 05:03:52'),
+	(122, 27, 'PENDING', 5, 'USER', 'Order created', '2025-12-17 07:19:25'),
+	(123, 27, 'ASSIGNED', 5, 'RIDER', 'Rider accepted', '2025-12-17 07:29:58'),
+	(124, 27, 'PICKING_UP', 5, 'RIDER', NULL, '2025-12-17 07:30:04'),
+	(125, 27, 'DELIVERING', 5, 'RIDER', NULL, '2025-12-17 07:30:09'),
+	(126, 27, 'COMPLETED', 5, 'RIDER', NULL, '2025-12-17 07:30:09'),
+	(127, 28, 'PENDING', 7, 'USER', 'Order created', '2025-12-18 03:43:09'),
+	(128, 28, 'ASSIGNED', 5, 'RIDER', 'Rider accepted', '2025-12-18 03:43:20'),
+	(129, 28, 'PICKING_UP', 5, 'RIDER', NULL, '2025-12-18 03:43:28'),
+	(130, 28, 'DELIVERING', 5, 'RIDER', NULL, '2025-12-18 03:43:35'),
+	(131, 28, 'COMPLETED', 5, 'RIDER', NULL, '2025-12-18 03:43:38'),
+	(132, 29, 'PENDING', 5, 'USER', 'Order created', '2025-12-18 03:45:25'),
+	(133, 30, 'PENDING', 5, 'USER', 'Order created', '2025-12-18 03:45:27'),
+	(134, 31, 'PENDING', 5, 'USER', 'Order created', '2025-12-18 03:45:28'),
+	(135, 32, 'PENDING', 5, 'USER', 'Order created', '2025-12-18 03:45:29'),
+	(136, 33, 'PENDING', 5, 'USER', 'Order created', '2025-12-18 03:45:29'),
+	(137, 34, 'PENDING', 5, 'USER', 'Order created', '2025-12-18 03:45:30'),
+	(138, 35, 'PENDING', 5, 'USER', 'Order created', '2025-12-18 03:45:30'),
+	(139, 36, 'PENDING', 5, 'USER', 'Order created', '2025-12-18 03:45:30'),
+	(140, 37, 'PENDING', 5, 'USER', 'Order created', '2025-12-18 03:46:31'),
+	(141, 37, 'ASSIGNED', 5, 'RIDER', 'Rider accepted', '2025-12-18 03:46:39'),
+	(142, 36, 'ASSIGNED', 5, 'RIDER', 'Rider accepted', '2025-12-18 03:47:53'),
+	(143, 35, 'ASSIGNED', 5, 'RIDER', 'Rider accepted', '2025-12-18 03:47:54'),
+	(144, 34, 'ASSIGNED', 5, 'RIDER', 'Rider accepted', '2025-12-18 03:47:55'),
+	(145, 33, 'ASSIGNED', 5, 'RIDER', 'Rider accepted', '2025-12-18 03:47:56'),
+	(146, 32, 'ASSIGNED', 5, 'RIDER', 'Rider accepted', '2025-12-18 03:47:57'),
+	(147, 31, 'ASSIGNED', 5, 'RIDER', 'Rider accepted', '2025-12-18 03:47:57'),
+	(148, 30, 'ASSIGNED', 5, 'RIDER', 'Rider accepted', '2025-12-18 03:47:58'),
+	(149, 29, 'ASSIGNED', 5, 'RIDER', 'Rider accepted', '2025-12-18 03:47:59'),
+	(150, 37, 'PICKING_UP', 5, 'RIDER', NULL, '2025-12-18 03:48:01'),
+	(151, 37, 'DELIVERING', 5, 'RIDER', NULL, '2025-12-18 03:48:02'),
+	(152, 37, 'COMPLETED', 5, 'RIDER', NULL, '2025-12-18 03:48:03'),
+	(153, 36, 'PICKING_UP', 5, 'RIDER', NULL, '2025-12-18 03:48:04'),
+	(154, 36, 'DELIVERING', 5, 'RIDER', NULL, '2025-12-18 03:48:04'),
+	(155, 36, 'COMPLETED', 5, 'RIDER', NULL, '2025-12-18 03:48:05'),
+	(156, 35, 'PICKING_UP', 5, 'RIDER', NULL, '2025-12-18 03:48:06'),
+	(157, 35, 'DELIVERING', 5, 'RIDER', NULL, '2025-12-18 03:48:07'),
+	(158, 35, 'COMPLETED', 5, 'RIDER', NULL, '2025-12-18 03:48:08'),
+	(159, 34, 'PICKING_UP', 5, 'RIDER', NULL, '2025-12-18 03:48:09'),
+	(160, 34, 'DELIVERING', 5, 'RIDER', NULL, '2025-12-18 03:48:10'),
+	(161, 34, 'COMPLETED', 5, 'RIDER', NULL, '2025-12-18 03:48:11'),
+	(162, 33, 'PICKING_UP', 5, 'RIDER', NULL, '2025-12-18 03:48:12'),
+	(163, 33, 'DELIVERING', 5, 'RIDER', NULL, '2025-12-18 03:48:12'),
+	(164, 33, 'COMPLETED', 5, 'RIDER', NULL, '2025-12-18 03:48:14'),
+	(165, 32, 'PICKING_UP', 5, 'RIDER', NULL, '2025-12-18 03:48:15'),
+	(166, 32, 'DELIVERING', 5, 'RIDER', NULL, '2025-12-18 03:48:16'),
+	(167, 32, 'COMPLETED', 5, 'RIDER', NULL, '2025-12-18 03:48:16'),
+	(168, 31, 'PICKING_UP', 5, 'RIDER', NULL, '2025-12-18 03:48:17'),
+	(169, 31, 'DELIVERING', 5, 'RIDER', NULL, '2025-12-18 03:48:18'),
+	(170, 31, 'COMPLETED', 5, 'RIDER', NULL, '2025-12-18 03:48:20'),
+	(171, 30, 'PICKING_UP', 5, 'RIDER', NULL, '2025-12-18 03:48:20'),
+	(172, 30, 'DELIVERING', 5, 'RIDER', NULL, '2025-12-18 03:48:21'),
+	(173, 30, 'COMPLETED', 5, 'RIDER', NULL, '2025-12-18 03:48:22'),
+	(174, 29, 'PICKING_UP', 5, 'RIDER', NULL, '2025-12-18 03:48:23'),
+	(175, 29, 'DELIVERING', 5, 'RIDER', NULL, '2025-12-18 03:48:25'),
+	(176, 29, 'COMPLETED', 5, 'RIDER', NULL, '2025-12-18 03:48:26'),
+	(177, 38, 'PENDING', 8, 'USER', 'Order created', '2025-12-18 03:53:30'),
+	(178, 38, 'ASSIGNED', 5, 'RIDER', 'Rider accepted', '2025-12-18 03:53:38'),
+	(179, 38, 'PICKING_UP', 5, 'RIDER', NULL, '2025-12-18 03:55:26'),
+	(180, 38, 'DELIVERING', 5, 'RIDER', NULL, '2025-12-18 03:55:27'),
+	(181, 38, 'COMPLETED', 5, 'RIDER', NULL, '2025-12-18 03:55:28');
 
--- Dumping structure for table webphoto.photos
+-- Dumping structure for table shopdb.photos
 CREATE TABLE IF NOT EXISTS `photos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `url` varchar(1024) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `price_cents` int(11) NOT NULL DEFAULT 0,
+  `name` varchar(255) DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table webphoto.photos: ~3 rows (approximately)
-INSERT INTO `photos` (`id`, `url`, `created_at`, `price_cents`) VALUES
-	(1, '/Hamburger.png', '2025-12-04 02:31:20', 100),
-	(2, '/fish.png', '2025-12-04 02:31:20', 200),
-	(4, 'https://img5.pic.in.th/file/secure-sv1/pngtree-group-of-fast-food-products-png-image_14008130.png', '2025-12-04 02:51:17', 300);
+-- Dumping data for table shopdb.photos: ~1 rows (approximately)
+REPLACE INTO `photos` (`id`, `url`, `created_at`, `price_cents`, `name`) VALUES
+	(11, '/uploads/1765949401646_0_E4QrzTZYNmK1-LDK.png', '2025-12-17 05:30:01', 16900, 'พิซซ่า'),
+	(16, '/uploads/1765958066616_Chicken-Mega-Box.png', '2025-12-17 07:54:26', 9900, 'ชุดไก่ทอด');
 
--- Dumping structure for table webphoto.users
+-- Dumping structure for table shopdb.users
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(191) NOT NULL,
@@ -214,13 +301,18 @@ CREATE TABLE IF NOT EXISTS `users` (
   `credit_cents` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table webphoto.users: ~3 rows (approximately)
-INSERT INTO `users` (`id`, `username`, `password`, `is_admin`, `created_at`, `is_rider`, `phone`, `rider_status`, `credit_cents`) VALUES
+-- Dumping data for table shopdb.users: ~8 rows (approximately)
+REPLACE INTO `users` (`id`, `username`, `password`, `is_admin`, `created_at`, `is_rider`, `phone`, `rider_status`, `credit_cents`) VALUES
 	(1, 'gap', '$2b$10$uiHZbVGr7wXV/bPmN4RbmOxLXs77hf/6vsw7dhh9DMJ9Uc0goUDCe', 1, '2025-12-04 02:31:53', 1, NULL, 'AVAILABLE', 8900),
 	(2, 'gap2', '$2b$10$5xG3bLbmlmKrH.00cDbs0eFaNxw0FQXmwUAHAcbaoXOW/Tefyfj86', 0, '2025-12-04 02:46:42', 1, NULL, 'AVAILABLE', 9600),
-	(3, 'gap12121', '$2b$10$FGQojDxanQpg3KZEAoPSIuFYaBBN5ynbSq.LEuRbFfVfB8.YYNEw2', 0, '2025-12-15 02:32:00', 0, NULL, 'OFFLINE', 0);
+	(3, 'gap12121', '$2b$10$FGQojDxanQpg3KZEAoPSIuFYaBBN5ynbSq.LEuRbFfVfB8.YYNEw2', 0, '2025-12-15 02:32:00', 0, NULL, 'OFFLINE', 0),
+	(4, 'ratthapoom', '$2b$10$aOmcj.V80XfUD9BiPnaCmuQz5FvCbVzsMBCVbzBf8UZ2Xa.WIUk5K', 0, '2025-12-15 02:48:27', 1, NULL, 'BUSY', 800),
+	(5, 'film1', '$2b$10$14lxmQm4Pgpo2OKkk3hW/.wnHBjy0GRMpNtYZmXq.znujqghITq/K', 1, '2025-12-17 04:23:42', 1, NULL, 'AVAILABLE', 2147394547),
+	(6, 'gaps', '$2b$10$BOzs5teHJH1BMF9PmM3s0ecrH4WyV.iZquw54fvTciGytu8lzweOO', 0, '2025-12-17 05:17:54', 0, NULL, 'OFFLINE', 10000),
+	(7, 'aabc11', '$2b$10$g87njlrmaIH99YrzegS3meVf0RQzbZUoS.s9wIHkgBxr2bhHnos42', 0, '2025-12-18 03:41:54', 0, NULL, 'OFFLINE', 83100),
+	(8, 'test', '$2b$10$.Ml1uh4ZfiY7L6bE3vZBseTTVAA4Oa/Ildmf1kbIO9kMdVbs80FV2', 0, '2025-12-18 03:51:38', 0, NULL, 'OFFLINE', 83100);
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

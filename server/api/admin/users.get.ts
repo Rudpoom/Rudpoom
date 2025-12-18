@@ -1,15 +1,11 @@
 import mysql from 'mysql2/promise'
 import { requireAdmin } from '../../utils/auth'
+import { getConn } from '../../utils/db'
 
 export default defineEventHandler(async (event) => {
   await requireAdmin(event)
-  const conn = await mysql.createConnection({
-    host: process.env.DB_HOST || '127.0.0.1',
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASS || '',
-    database: process.env.DB_NAME || 'webphoto'
-  })
-  // Build a safe SELECT list depending on available columns
+  const conn = await getConn()
+ 
   let cols: any[] = []
   try {
     const [cr]: any = await conn.execute("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME='users'")
@@ -25,7 +21,7 @@ export default defineEventHandler(async (event) => {
     cset.has('role') ? 'role' : 'NULL AS role',
     cset.has('credit_cents') ? 'credit_cents' : '0 AS credit_cents'
   ].join(', ')
-  // Read rows; if table missing, return [] instead of 500
+  
   let rows: any[] = []
   try {
     const [r]: any = await conn.execute(`SELECT ${selectCols} FROM users ORDER BY id ASC`)
@@ -36,6 +32,8 @@ export default defineEventHandler(async (event) => {
     } else {
       throw e
     }
+  } finally {
+    try { conn.release() } catch {}
   }
   const out = (rows || []).map((u: any) => {
     const username = (u?.username ?? '').toString()

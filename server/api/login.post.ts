@@ -1,6 +1,7 @@
 import mysql from "mysql2/promise";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { getConn } from '../utils/db'
 
 export default defineEventHandler(async (event) => {
   const body: any = await readBody(event);
@@ -10,7 +11,7 @@ export default defineEventHandler(async (event) => {
   const host = process.env.DB_HOST || "127.0.0.1";
   const dbUser = process.env.DB_USER || "root";
   const dbPass = process.env.DB_PASS || "";
-  const dbName = process.env.DB_NAME || "webphoto";
+  const dbName = process.env.DB_NAME || "shopdb";
 
   // Best-effort: ensure database exists
   try {
@@ -25,13 +26,12 @@ export default defineEventHandler(async (event) => {
 
   let conn: mysql.Connection | null = null;
   try {
-    conn = await mysql.createConnection({ host, user: dbUser, password: dbPass, database: dbName });
+    conn = await getConn()
   } catch (e) {
-    // Avoid 500 if DB is unavailable
+
     return { status: false };
   }
 
-  // Ensure users table/columns exist (tolerate alternate schemas)
   try {
     await conn.execute(
       "CREATE TABLE IF NOT EXISTS users (" +
@@ -45,7 +45,7 @@ export default defineEventHandler(async (event) => {
   } catch {}
   try { await conn.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS password VARCHAR(255) NULL"); } catch {}
 
-  // Determine login field
+
   let cols: any[] = [];
   try {
     const r: any = await conn.execute(
@@ -64,7 +64,7 @@ export default defineEventHandler(async (event) => {
     (cset.has("is_rider") ? "is_rider" : "0 AS is_rider")
   ].join(", ");
 
-  // Read user row
+
   let rows: any[] = [];
   try {
     const r: any = await conn.execute(
@@ -87,7 +87,6 @@ export default defineEventHandler(async (event) => {
       } catch {}
       rows = [];
     } else {
-      // Any DB failure => no 500
       return { status: false };
     }
   }
@@ -106,7 +105,7 @@ export default defineEventHandler(async (event) => {
   const uname = user?.uname || "";
   const token = jwt.sign({ id: user.id, username: uname, admin: isAdmin, rider: isRider }, "secret123");
 
-  try { await (conn as mysql.Connection).end(); } catch {}
+  try { conn.release() } catch {}
   return { status: true, token, admin: isAdmin, rider: isRider };
 });
 

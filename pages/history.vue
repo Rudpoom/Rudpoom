@@ -1,9 +1,9 @@
 <template>
   <div class="card">
-    <div class="card-header">Order History</div>
+    <div class="card-header">ประวัติการสั่งซื้อ</div>
     <div v-if="loading" class="subtle mt-3">Loading...</div>
     <div v-else>
-      <div v-if="orders.length === 0" class="subtle mt-3">No orders yet</div>
+      <div v-if="orders.length === 0" class="subtle mt-3">ไม่มีรายการสั่งซื้อ</div>
       <div v-else class="mt-3">
         <div v-for="o in orders" :key="o.id" class="order-row">
           <img :src="o.photo_url" alt="thumb" />

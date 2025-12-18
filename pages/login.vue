@@ -1,6 +1,5 @@
 <template>
   <div class="card centered">
-    <img src="/fire.png" alt="" style="width: 200px; height: 200px; margin-left: 30%;">
     <div class="card-header">เข้าสู่ระบบ</div>
     <form @submit.prevent="login">
       <div class="field">
